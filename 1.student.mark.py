@@ -84,6 +84,13 @@ def add_student_to_class(student, class_list):
     # Figure out if the class exist
     class_position = find_dict_in_list("ID", class_to_add, class_list)
     if class_position != -1:
+
+        # Check for class duplication
+        for item in class_list[class_position]["Student list"]:
+            if student["ID"] == item:
+                input("Student already in the course. Press Enter to try again.")
+                return
+
         if is_class_full(class_list[class_position]):  # Check if the class is full, if yes -> ask the user if they want to increase total student count
             if formatted_input(f"The class is full, do you want to increase the total number of student in {class_to_add} (Y/N): ", 1) == 'Y':
                 class_list[class_position]["Total"] += 1
@@ -103,15 +110,20 @@ def add_student_class_standalone(student_list, class_list):  # Add class to exis
         input("Student not found! Press Enter to continue.")
 
 def add_mark(student_list, class_list):
+    show_all_class(class_list)
     _class = formatted_input("Enter class ID: ", 1)
     class_position = find_dict_in_list("ID", _class, class_list)
     if class_position == -1:
-        input("Class not found, press Enter to try again.")
+        input("Class not found.")
+        return
 
+    show_students_class(student_list, class_list, _class)
+    
     student = formatted_input("Enter student ID: ", 1)
     student_position = find_dict_in_list("ID", student, student_list)
     if student_position == -1:
-        input("Student not found, press Enter to try again.")
+        input("Student not found.")
+        return
 
     mark = input("Enter student mark: ")
     class_list[class_position]["Mark list"].append({student: mark})  # Add the dictionary with student's ID and mark
@@ -141,9 +153,10 @@ def show_all_class(class_list):
         )
 
 # Show each class student
-def show_students_class(student_list, class_list):
+def show_students_class(student_list, class_list, class_to_display):
     tab_width = 20  # Set the padding for the table column
-    class_to_display = formatted_input("Enter the class ID to display: ",1)
+    if check_null(class_to_display) == True:  # Use this to reuse this function in other part where we already ask for class input
+        class_to_display = formatted_input("Enter the class ID to display: ",1)
     class_position = find_dict_in_list("ID", class_to_display, class_list)
     if class_position == -1:
         input("No class found. Press Enter to try again!")
@@ -158,12 +171,13 @@ def show_students_class(student_list, class_list):
         print()
 
 def show_mark(student_list, class_list):
+    show_all_class(class_list)
     tab_width = 20
     class_to_display = formatted_input("Enter the class ID to display: ",1)
 
     class_position = find_dict_in_list("ID", class_to_display, class_list)   
     if class_position == -1:
-        input("No class found. Press Enter to try again!")
+        print("No class found.", end= " ")
         return
 
     print("Student name" + " " * 8 + "Student ID" + " " * 10 + "Mark")
@@ -188,7 +202,8 @@ while True:
         "1. Enter student's information.\n" + "2. Enter class's information.\n" + 
         "3. Add class to existing student.\n" + "4. Show all students data.\n" + 
         "5. Show all classes.\n" + "6. Show all student from a class.\n" + 
-        "7. Add marks for a student in a given course.\n" + "8. Display marks for a given course.\n"
+        "7. Add marks for a student in a given course.\n" + "8. Display marks for a given course.\n" +
+        '"exit" to quit the program.\n'
     )
     match choice:
         case "1":
@@ -213,7 +228,8 @@ while True:
             input("Press Enter to continue.")
         case "6":
             os.system("cls")
-            show_students_class(students, classes)
+            show_all_class(classes)
+            show_students_class(students, classes, "")
             input("Press Enter to continue.")
         case "7":
             os.system("cls")
