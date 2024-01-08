@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 # Utility functions
 
 def formatted_input(message, option):  # Function to reduce clutter in code
@@ -64,12 +65,18 @@ def add_student(student_list, class_list):
         input("Duplicate student, please try again!")
         return
 
-    student_dob = input(f"Enter {student_name} date of birth: ").strip()
+    while True:
+        student_dob = input(f"Enter {student_name} date of birth (DD-MM-YYYY): ").strip()
+        try:
+            student_dob = datetime.strptime(student_dob, "%d-%m-%Y").date().strftime("%d-%m-%Y")
+            break
+        except ValueError:
+            print("Invalid date-time input. Please try again!")
 
     student = {
         "Name": student_name,
         "ID": student_id,
-        "DOB": student_dob,
+        "DOB": str(student_dob),
     }
     add_student_to_class(student, class_list)  # Add student to class here
     student_list.append(student)  # Add student to the global student list
