@@ -39,8 +39,13 @@ def find_dict_in_list(key, dict_to_find, list_to_search):  # Find the dictionary
 def add_class(class_list):
     class_name = formatted_input("Enter the class name: ", 3)
     class_id = formatted_input("Enter the class ID: ", 1)
+    if check_null(class_name) or check_null(class_id):
+        input("Cannot leave input blank, please try again!")
+        return
+
     number_of_student = int(input("Enter number of student for this class: "))
 
+    
     # Check for duplication in class list
     if check_duplicate_in_list(class_name, class_list) or check_duplicate_in_list(class_id, class_list):
         input("Duplicate class, please try again!")
@@ -60,6 +65,10 @@ def add_student(student_list, class_list):
     student_name = formatted_input("Enter your student's name: ", 2)  # Capitalize every first letter
     student_id = formatted_input(f"Enter {student_name} ID: ", 1)
 
+    if check_null(student_name) or check_null(student_id):
+        input("Cannot leave the input blank, please try again!")
+        return
+
     if check_duplicate_in_list(student_name, student_list) or check_duplicate_in_list(student_id, student_list):
         # Check for student duplication: name, id
         input("Duplicate student, please try again!")
@@ -68,6 +77,7 @@ def add_student(student_list, class_list):
     while True:
         student_dob = input(f"Enter {student_name} date of birth (DD-MM-YYYY): ").strip()
         try:
+            # Convert the input to date type and format it
             student_dob = datetime.strptime(student_dob, "%d-%m-%Y").date().strftime("%d-%m-%Y")
             break
         except ValueError:
@@ -83,10 +93,12 @@ def add_student(student_list, class_list):
 
 def add_student_to_class(student, class_list):
     show_all_class(class_list)
-    class_to_add = formatted_input("Enter the class ID to add: ", 1)
-
-    if check_null(class_to_add):
-        return
+    while True:
+        class_to_add = formatted_input("Enter the class ID to add: ", 1)
+        if check_null(class_to_add):
+            input("Input empty, please try again")
+        else:
+            break
 
     # Figure out if the class exist
     class_position = find_dict_in_list("ID", class_to_add, class_list)
