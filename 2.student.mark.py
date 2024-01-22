@@ -98,8 +98,8 @@ class Courses:
         return len(self.__courses) == 0
 
     def show_courses(self):
-        headers = ["Class name", "Class ID", "Number of student", "Current"]
-        widths = [10, 12, 3]
+        headers = ["Course name", "Course ID", "Number of student", "Current"]
+        widths = [9, 11, 3, 0]
         for header, width in zip(headers, widths):
             print(f"{header}{' ' * width}", end="")
         print()
@@ -121,7 +121,7 @@ class Course:
         self.__studentsID = []  # Student ID only, not object
 
     def __str__(self) -> str:
-        return f"Class name {self.__name}\nClass Id: {self.__id}\nTotal student: {self.__total}\nCurrent number of student: {self.__current}"
+        return f"Course name {self.__name}\nCourse Id: {self.__id}\nTotal student: {self.__total}\nCurrent number of student: {self.__current}"
 
     def get_name(self) -> str:
         return self.__name
@@ -179,35 +179,6 @@ class Course:
                 f"{student.get_dob()}"
             )
 
-def add_course(courseList):
-    if courseList.is_full():
-        increase_courses = get_input_as_string("Course list is full, do you want to increase the number of courses? (Y/N) ").upper() 
-        if increase_courses == 'N':
-            return
-        print(f"Current number of courses: {courseList.get_current()}")
-        while True:
-            if (courseList.set_number_of_course(get_input_as_int("Enter new number of courses: "))== -1):
-                continue
-            break
-    name, id, total = "", "", 0
-    name = get_input_as_string("Enter the class name: ").title()
-    id = get_input_as_string("Enter the class ID: ").upper()
-    total = get_input_as_int("Enter the number of student in the class: ")
-    newCourse = Course(name, id, total)
-    courseList.add_course(newCourse)
-
-def show_all_student_course(studentList, courseList):
-    courseInput = get_input_as_string("Enter class name or ID: ")
-    coursePosition = courseList.find_course(courseInput)
-    if coursePosition == -1:
-        input("Class not found, press Enter to continue.")
-        return
-    course = courseList.get_course(coursePosition)
-    print(course)
-    course.show_all_student(studentList)
-
-
-# Student related class and function
 class Students:
     def __init__(self):
         self.__students = []  # List of object student
@@ -223,6 +194,9 @@ class Students:
 
     def get_student(self, studentPosition) -> object:
         return self.__students[studentPosition]
+    
+    def check_empty(self) -> bool:
+        return len(self.__students) == 0
 
     def show_all_student(self):
         print(f"Total number of student: {len(self.__students)}")
@@ -259,10 +233,124 @@ class Student:
     def get_dob(self) -> str:
         return self.__dob
 
+class Marks(Courses):
+    def __init__(self):
+        super().__init__()
 
-def add_student(studentList, courseList):
+    def add_course(self, newCourse):
+        self._Courses__courses.append(newCourse)
+
+    def get_total(self):
+        pass
+
+    def get_current(self):
+        pass
+    
+    def set_number_of_course(self, numberOfCourse):
+        pass
+
+    def is_full(self):
+        pass
+
+    def check_empty(self):
+        pass
+
+    def show_courses(self):
+        pass
+
+class Mark(Course):
+    def __init__(self, name, id):
+        super().__init__(name, id, 0)
+        self.__students = []  # Student mark object
+    
+    def __str__(self) -> str:
+        return f"Course name: {self._Course__name}\nCourse ID: {self._Course__id}"
+    
+    def get_total(self):
+        pass
+
+    def set_total(self):
+        pass
+
+    def get_current(self):
+        pass
+    
+    def is_full(self):
+        pass
+    
+    def add_student(self, newStudent):
+        self.__students.append(newStudent)
+    
+    def find_student(self, student) -> int:
+        position = find_item_in_list(student, self.__students, 1)
+        position = position if position != -1 else find_item_in_list(student.get_id(), self.__students, 1)
+        return position
+
+    def get_student(self, studentPosition) -> object:
+        return self.__students[studentPosition]
+    
+    def show_all_student(self):
+        headers = ["Student name", "Student ID", "Mark"]
+        widths = [8, 10, 16]
+        for header, width in zip(headers, widths):
+            print(f"{header}{' ' * width}", end="")
+        print()
+
+        for student in self.__students:
+            print(
+                f"{student.get_name()}{output_padding(student.get_name())}"
+                f"{student.get_id()}{output_padding(student.get_id())}"
+                f"{student.get_mark()}{output_padding(student.get_mark())}"
+            )
+
+class StudentMark(Student):
+    def __init__(self, name, id, dob):
+        super().__init__(name, id, dob)
+        self.__mark = 0
+    
+    def get_mark(self) -> float:
+        return self.__mark
+    
+    def set_mark(self, mark) -> int:
+        if mark < 0:
+            print("Invalid input, please try again!")
+            return -1
+        else:
+            self.__mark = mark
+            return 0
+
+def add_course(courseList, markList):
+    if courseList.is_full():
+        increase_courses = get_input_as_string("Course list is full, do you want to increase the number of courses? (Y/N) ").upper() 
+        if increase_courses == 'N':
+            return
+        print(f"Current number of courses: {courseList.get_current()}")
+        while True:
+            if (courseList.set_number_of_course(get_input_as_int("Enter new number of courses: "))== -1):
+                continue
+            break
+    name, id, total = "", "", 0
+    name = get_input_as_string("Enter the Course name: ").title()
+    id = get_input_as_string("Enter the Course ID: ").upper()
+    total = get_input_as_int("Enter the number of student in the course: ")
+    newCourse = Course(name, id, total)
+    newMark = Mark(name, id)
+    courseList.add_course(newCourse)
+    markList.add_course(newMark)
+
+def show_all_student_course(studentList, courseList):
+    courseInput = get_input_as_string("Enter Course name or ID: ")
+    coursePosition = courseList.find_course(courseInput)
+    if coursePosition == -1:
+        input("Course not found, press Enter to continue.")
+        return
+    course = courseList.get_course(coursePosition)
+    print(course)
+    course.show_all_student(studentList)
+
+def add_student(studentList, courseList, markList):
     if courseList.check_empty():
-        input("Class list empty, please add a class. Press Enter to try again!")
+        input("Course list empty, please add a Course. Press Enter to try again!")
         return
     newStudent, name, id, dob = "", "", "", ""
     while True:
@@ -270,6 +358,7 @@ def add_student(studentList, courseList):
         id = get_input_as_string("Enter student ID: ").upper()
         dob = get_input_as_date(f'Enter "{name}" date of birth (DD-MM-YYYY): ')
         newStudent = Student(name, id, dob)
+        newMark = StudentMark(name, id, dob)
         if studentList.check_duplicate(newStudent):
             print("Duplicate student, please try again!")
             continue
@@ -278,7 +367,7 @@ def add_student(studentList, courseList):
 
     courseList.show_courses()
     while True:
-        courseChoice = get_input_as_string('Enter the class ID to add student or "empty" to skip: ').upper()
+        courseChoice = get_input_as_string('Enter the Course ID to add student or "empty" to skip: ').upper()
         if courseChoice == "EMPTY":
             break
         coursePosition = courseList.find_course(courseChoice)
@@ -286,22 +375,35 @@ def add_student(studentList, courseList):
             input("Course not found, press Enter to try again!")
             continue
         course = courseList.get_course(coursePosition)
+        mark = markList.get_course(coursePosition)
 
         if course.add_student(newStudent.get_id()) == -1:
             continue
+
+        markChoice = get_input_as_string("Do you want to add mark to student? (Y/N): ").upper()
+        if markChoice == 'Y':
+            while True:
+                if newMark.set_mark(get_input_as_float("Enter mark: ")) != -1:
+                    break
+        mark.add_student(newMark)
         break
 
-
-def add_class_to_student(studentList, courseList):
-    student = ""
+def add_class_to_student(studentList, courseList, markList):
+    if studentList.check_empty:
+        input("No student found in the system, please add one!\nPress Enter to continue.")
+        return
+    student, mark = "", ""
     while True:
         studentInput = get_input_as_string("Enter student name or id: ").upper()
         studentPosition = studentList.find_student(studentInput)
         if studentPosition == -1:
             print("Student not found, please try again!")
             continue
+        clear_screen()
         student = studentList.get_student(studentPosition)
+        print(student)
         break
+    print()
     courseList.show_courses()
 
     while True:
@@ -311,6 +413,7 @@ def add_class_to_student(studentList, courseList):
             choice = get_input_as_string("Course not found, do you want to try again? (Y/N) ").upper()
             if choice == "N":
                 return
+        mark = markList.get_course(coursePosition)
         course = courseList.get_course(coursePosition)
         if course.check_duplicate_student(student.get_id()):
             print("Duplicate student, please try again!")
@@ -318,9 +421,38 @@ def add_class_to_student(studentList, courseList):
         course.add_student(student.get_id())
         break
 
+    newMark = StudentMark(student.get_name(), student.get_id(), student.get_dob())
+    while True:
+        if newMark.set_mark(get_input_as_float("Enter mark: ")) != -1:
+            break
+    mark.add_student(newMark)
+
+def add_mark_to_student(markList, courseList):
+    mark = show_all_mark_course(markList, courseList)
+    print()
+    studentInput = get_input_as_string("Enter student name or ID: ")
+    studentPosition = mark.find_student(studentInput)
+    studentMark = mark.get_student(studentPosition)
+    while True:
+        if studentMark.set_mark(get_input_as_float("Enter mark: ")) != -1:
+            break
+
+def show_all_mark_course(markList, courseList) -> object:
+    courseInput = get_input_as_string("Enter Course name or ID: ")
+    coursePosition = courseList.find_course(courseInput)
+    if coursePosition == -1:
+        input("Course not found, press Enter to continue.")
+        return
+    mark = markList.get_course(coursePosition)
+    clear_screen()
+    print(mark)
+    print()
+    mark.show_all_student()
+    return mark
 
 students = Students()
 courses = Courses()
+marks = Marks()
 
 courses.set_number_of_course(get_input_as_int("Enter number of courses: "))
 while True:
@@ -328,10 +460,10 @@ while True:
     startup_display = (
         "1. Enter student's information.\n"
         + "2. Enter course's information\n"
-        + "3. Add class to existing student\n"
+        + "3. Add course to existing student\n"
         + "4. Show all students data\n"
-        + "5. Show all classes\n"
-        + "6. Show all student from a class\n"
+        + "5. Show all Courses\n"
+        + "6. Show all student from a Course\n"
         + "7. Add marks for a student in a given course.\n"
         + "8. Display marks for a given course\n"
         + '"exit" to quit the program.\n'
@@ -341,14 +473,14 @@ while True:
     match choice:
         case "1":
             clear_screen()
-            add_student(students, courses)
-
+            add_student(students, courses, marks)
         case "2":
             clear_screen()
-            add_course(courses)
+            add_course(courses, marks)
         case "3":
             clear_screen()
-            add_class_to_student(students, courses)
+            students.show_all_student()
+            add_class_to_student(students, courses, marks)
         case "4":
             clear_screen()
             students.show_all_student()
@@ -364,8 +496,13 @@ while True:
             input()
         case "7":
             clear_screen()
+            courses.show_courses()
+            add_mark_to_student(marks, courses)
         case "8":
             clear_screen()
+            courses.show_courses()
+            show_all_mark_course(marks, courses)
+            input()
         case "exit":
             exit()
         case _:
