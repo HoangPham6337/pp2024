@@ -2,64 +2,47 @@ import os
 import platform
 from datetime import datetime
 
-
 # Utility functions
 def clear_screen():
-    if (
-        platform.uname().system == "Linux" or platform.uname().system == "Darwin"
-    ):  # MacOS
-        os.system("clear")
-    else:
-        os.system("cls")
+    os.system("cls") if platform.uname().system == "Windows" else os.system("clear")
 
-
-def input_string(message) -> str:
+def get_input_as_string(prompt) -> str:
     while True:
-        data = input(message).strip()
-        if check_null(data):
-            print("Cannot leave input blank, please try again!")
-            continue
-        return data
+        data = input(prompt).strip()
+        if not data: print("Cannot leave input blank, please try again!")
+        else: return data
 
-
-def input_int(message) -> int:
+def get_input_as_int(prompt) -> int:
     while True:
-        data = input(message).strip()
+        data = input(prompt).strip()
         try:
-            data = int(data)
-            return data
+            return int(data)
         except ValueError:
             print("Invalid input, please try again!")
 
-def input_float(message) -> int:
+def get_input_as_float(prompt) -> float:
     while True:
-        data = input(message).strip()
+        data = input(prompt).strip()
         try:
-            data = float(data)
-            return data
+            return float(data)
         except ValueError:
             print("Invalid input, please try again!")
 
+def output_padding(item) -> str:
+    tab_width = 20
+    return " " * (tab_width - len(str(item)))
 
 def find_item_in_list(itemToFind, listToSearch, caseInsensitive) -> int:
     if caseInsensitive == 1:
         itemToFind = itemToFind.upper()
         for i in range(0, len(listToSearch)):
-            if (
-                listToSearch[i].get_name().upper() == itemToFind
-                or listToSearch[i].get_id().upper() == itemToFind
-            ):
+            if (listToSearch[i].get_name().upper() == itemToFind or listToSearch[i].get_id().upper() == itemToFind):
                 return i
-        return -1
     else:
         for i in range(0, len(listToSearch)):
-            if (
-                listToSearch[i].get_name() == itemToFind
-                or listToSearch[i].get_id() == itemToFind
-            ):
+            if (listToSearch[i].get_name() == itemToFind or listToSearch[i].get_id() == itemToFind):
                 return i
-        return -1
-
+    return -1
 
 def find_in_list(itemToFind, listToSearch) -> int:
     for i in range(0, len(listToSearch)):
@@ -67,19 +50,14 @@ def find_in_list(itemToFind, listToSearch) -> int:
             return i
     return -1
 
-
-def check_null(inputString) -> bool:
-    return inputString == ""
-
-
-def input_date(message) -> datetime:
+def get_input_as_date(prompt) -> datetime:
     while True:
-        date = input_string(message)
+        date_str = get_input_as_string(prompt)
         try:
-            date = datetime.strptime(date, "%d-%m-%Y").date().strftime("%d-%m-%Y")
+            date = datetime.strptime(date_str, "%d-%m-%Y").date().strftime("%d-%m-%Y")
             return date
         except ValueError:
-            print("Invalid date-time input. Please try again!")
+            print("Invalid date input. Please use the format DD-MM-YYYY and try again!")
 
 
 # Courses related class and functions
@@ -98,9 +76,8 @@ class Courses:
         if numberOfCourse > 0:
             self.__number_of_course = numberOfCourse
             return 0
-        else:
-            print("Invalid input, please try again!")
-            return -1
+        print("Invalid input, please try again!")
+        return -1
 
     def add_course(self, newCourse):
         if find_item_in_list(newCourse.get_name(), self.__courses, 0) != -1:
@@ -121,27 +98,19 @@ class Courses:
         return len(self.__courses) == 0
 
     def show_courses(self):
-        tab_width = 20
-        print(
-            "Class name"
-            + " " * (tab_width - 10)
-            + "Class ID"
-            + " " * 12
-            + "Number of student"
-            + " " * 3
-            + "Current"
-        )
+        headers = ["Class name", "Class ID", "Number of student", "Current"]
+        widths = [10, 12, 3]
+        for header, width in zip(headers, widths):
+            print(f"{header}{' ' * width}", end="")
+        print()
+
         for course in self.__courses:
             print(
-                course.get_name()
-                + " " * (tab_width - len(course.get_name()))
-                + course.get_id()
-                + " " * (tab_width - len(course.get_id()))
-                + str(course.get_total())
-                + " " * (tab_width - len(str(course.get_total())))
-                + str(course.get_current())
+                f"{course.get_name()}{output_padding(course.get_name())}"
+                f"{course.get_id()}{output_padding(course.get_id())}"
+                f"{course.get_total()}{output_padding(course.get_total())}"
+                f"{course.get_current()}"
             )
-
 
 class Course:
     def __init__(self, name, id, total):
@@ -164,12 +133,10 @@ class Course:
         return self.__total
 
     def set_total(self, newTotal):
-        if newTotal > 0 and newTotal > self.__total:
+        if newTotal > self.__total:
             self.__total = newTotal
-        elif newTotal < self.__total:
-            print("Input smaller than current number of student. Please try again!")
         else:
-            print("Invalid input, please try again!")
+            print("Invalid input, please enter a number greater than the current total.")
 
     def get_current(self) -> int:
         return self.__current
@@ -179,19 +146,10 @@ class Course:
 
     def add_student(self, newStudentID) -> int:
         if self.is_full():
-            if (
-                input_string(
-                    "The course is full. Do you want to add more student? (Y/N) "
-                ).upper()
-                == "Y"
-            ):
-                self.set_total(
-                    input_int(
-                        f"Current maximum: {self.get_total()}. Enter the new value: "
-                    )
-                )
+            if (get_input_as_string("The course is full. Do you want to add more student? (Y/N) ").upper() == "Y"):
+                self.set_total(get_input_as_int(f"Current maximum: {self.get_total()}. Enter the new value: "))
             else:
-                input(f"Failed to add student to course, please try again!")
+                input("Failed to add student to course, please try again!")
                 return -1
 
         if find_in_list(newStudentID, self.__studentsID) == -1:
@@ -206,47 +164,40 @@ class Course:
         return find_in_list(newStudentID, self.__studentsID) != -1
 
     def show_all_student(self, studentList):
-        tabWidth = 20
-        print(
-            "Student name"
-            + " " * 8
-            + "Student ID"
-            + " " * 10
-            + "Date of birth"
-            + " " * 7
-        )
-        for studentID in self.__studentsID:
-            studentPosition = studentList.find_student(studentID)
-            student = studentList.get_student(studentPosition)
-            print(
-                student.get_name()
-                + " " * (tabWidth - len(student.get_name()))
-                + student.get_id()
-                + " " * (tabWidth - len(student.get_id()))
-                + student.get_dob()
-            )
+        headers = ["Student name", "Student ID", "Date of birth"]
+        widths = [8, 10, 7]
+        for header, width in zip(headers, widths):
+            print(f"{header}{' ' * width}", end="")
+        print()
 
+        for student_id in self.__studentsID:
+            student_position = studentList.find_student(student_id)
+            student = studentList.get_student(student_position)
+            print(
+                f"{student.get_name()}{output_padding(student.get_name())}"
+                f"{student.get_id()}{output_padding(student.get_id())}"
+                f"{student.get_dob()}"
+            )
 
 def add_course(courseList):
     if courseList.is_full():
-        choice = input_string("Course list is full, do you want to increase the number of courses? (Y/N) ").upper()
-        if choice == "N":
+        increase_courses = get_input_as_string("Course list is full, do you want to increase the number of courses? (Y/N) ").upper() 
+        if increase_courses == 'N':
             return
         print(f"Current number of courses: {courseList.get_current()}")
         while True:
-            if (courseList.set_number_of_course(input_int("Enter new number of courses: "))== -1):
+            if (courseList.set_number_of_course(get_input_as_int("Enter new number of courses: "))== -1):
                 continue
             break
     name, id, total = "", "", 0
-    name = input_string("Enter the class name: ").title()
-    id = input_string("Enter the class ID: ").upper()
-    total = int(input_string("Enter the number of student in the class: "))
+    name = get_input_as_string("Enter the class name: ").title()
+    id = get_input_as_string("Enter the class ID: ").upper()
+    total = get_input_as_int("Enter the number of student in the class: ")
     newCourse = Course(name, id, total)
     courseList.add_course(newCourse)
 
-
 def show_all_student_course(studentList, courseList):
-    courseInput = input_string("Enter class name or ID: ")
+    courseInput = get_input_as_string("Enter class name or ID: ")
     coursePosition = courseList.find_course(courseInput)
     if coursePosition == -1:
         input("Class not found, press Enter to continue.")
@@ -274,24 +225,19 @@ class Students:
         return self.__students[studentPosition]
 
     def show_all_student(self):
-        tab_width = 20
-        print(
-            "Student name"
-            + " " * 8
-            + "Student ID"
-            + " " * 10
-            + "Date of birth"
-            + " " * 7
-        )
+        print(f"Total number of student: {len(self.__students)}")
+        headers = ["Student name", "Student ID", "Date of birth"]
+        widths = [8, 10, 7]
+        for header, width in zip(headers, widths):
+            print(f"{header}{' ' * width}", end="")
+        print()
+
         for student in self.__students:
             print(
-                student.get_name()
-                + " " * (tab_width - len(student.get_name()))
-                + student.get_id()
-                + " " * (tab_width - len(student.get_id()))
-                + student.get_dob()
+                f"{student.get_name()}{output_padding(student.get_name())}"
+                f"{student.get_id()}{output_padding(student.get_id())}"
+                f"{student.get_dob()}"
             )
-
 
 class Student:
     def __init__(self, name, id, dob):
@@ -320,18 +266,19 @@ def add_student(studentList, courseList):
         return
     newStudent, name, id, dob = "", "", "", ""
     while True:
-        name = input_string("Enter student name: ").title()
-        id = input_string("Enter student ID: ").upper()
-        dob = input_date(f'Enter "{name}" date of birth (DD-MM-YYYY): ')
+        name = get_input_as_string("Enter student name: ").title()
+        id = get_input_as_string("Enter student ID: ").upper()
+        dob = get_input_as_date(f'Enter "{name}" date of birth (DD-MM-YYYY): ')
         newStudent = Student(name, id, dob)
         if studentList.check_duplicate(newStudent):
             print("Duplicate student, please try again!")
             continue
         break
     studentList.add_student(newStudent)
+
     courseList.show_courses()
     while True:
-        courseChoice = input_string('Enter the class ID to add student or "empty" to skip:').upper()
+        courseChoice = get_input_as_string('Enter the class ID to add student or "empty" to skip: ').upper()
         if courseChoice == "EMPTY":
             break
         coursePosition = courseList.find_course(courseChoice)
@@ -342,15 +289,13 @@ def add_student(studentList, courseList):
 
         if course.add_student(newStudent.get_id()) == -1:
             continue
-
-        # Add maximum check
         break
 
 
-def add_student_standalone(studentList, courseList):
+def add_class_to_student(studentList, courseList):
     student = ""
     while True:
-        studentInput = input_string("Enter student name or id: ").upper()
+        studentInput = get_input_as_string("Enter student name or id: ").upper()
         studentPosition = studentList.find_student(studentInput)
         if studentPosition == -1:
             print("Student not found, please try again!")
@@ -360,15 +305,11 @@ def add_student_standalone(studentList, courseList):
     courseList.show_courses()
 
     while True:
-        courseInput = input("Enter course name or ID to add student: ")
+        courseInput = get_input_as_string("Enter course name or ID to add student: ")
         coursePosition = courseList.find_course(courseInput)
         if coursePosition == -1:
-            choice = input_string(
-                "Course not found, do you want to try again? (Y/N) "
-            ).upper()
-            if choice == "Y":
-                continue
-            else:
+            choice = get_input_as_string("Course not found, do you want to try again? (Y/N) ").upper()
+            if choice == "N":
                 return
         course = courseList.get_course(coursePosition)
         if course.check_duplicate_student(student.get_id()):
@@ -381,7 +322,7 @@ def add_student_standalone(studentList, courseList):
 students = Students()
 courses = Courses()
 
-courses.set_number_of_course(input_int("Enter number of courses: "))
+courses.set_number_of_course(get_input_as_int("Enter number of courses: "))
 while True:
     clear_screen()
     startup_display = (
@@ -405,20 +346,16 @@ while True:
         case "2":
             clear_screen()
             add_course(courses)
-            input()
         case "3":
             clear_screen()
-            add_student_standalone(students, courses)
-            input()
+            add_class_to_student(students, courses)
         case "4":
             clear_screen()
             students.show_all_student()
             input()
         case "5":
             clear_screen()
-            print(
-                f"Maximum number of courses: {courses.get_total()}\nCurrent number of courses: {courses.get_current()}\n"
-            )
+            print(f"Maximum number of courses: {courses.get_total()}\nCurrent number of courses: {courses.get_current()}\n")
             courses.show_courses()
             input()
         case "6":
