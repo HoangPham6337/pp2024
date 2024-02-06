@@ -13,7 +13,7 @@ from functions import (
     show_all_mark_course,
     show_all_student_course,
     calculate_GPA,
-    rank_GPA
+    rank_GPA,
 )
 from output import (
     compatibility_check,
@@ -107,9 +107,7 @@ def welcome_screen(stdscr):
 
     curses.curs_set(True)
     courses.set_number_of_course(
-        get_input_as_int_curses(
-            menuWindow, "Enter number of courses: ", False, 19
-        )
+        get_input_as_int_curses(menuWindow, "Enter number of courses: ", False, 19)
     )
     curses.curs_set(False)
     startup_display = [
@@ -132,8 +130,7 @@ def welcome_screen(stdscr):
         for i in range(0, len(startup_display)):
             if i == option - 1:
                 display = "=>" + startup_display[i]
-                menuWindow.addstr(
-                    i, 0, display, curses.A_BLINK | BLUE_AND_BLACK)
+                menuWindow.addstr(i, 0, display, curses.A_BLINK | BLUE_AND_BLACK)
             else:
                 menuWindow.addstr(i, 0, startup_display[i])
         menuWindow.refresh()

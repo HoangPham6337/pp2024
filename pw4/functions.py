@@ -2,7 +2,7 @@ from input import (
     get_input_as_string,
     get_input_as_int,
     get_input_as_date,
-    get_input_as_float_floor
+    get_input_as_float_floor,
 )
 
 from domains.Course import Course
@@ -91,9 +91,7 @@ def add_student(studentList, courseList, markList):
         ).upper()
         if markChoice == "Y":
             while True:
-                if newMark.set_mark(
-                        get_input_as_float_floor("Enter mark: ")
-                ) != -1:
+                if newMark.set_mark(get_input_as_float_floor("Enter mark: ")) != -1:
                     break
         mark.add_student(newMark)
         break
@@ -101,14 +99,11 @@ def add_student(studentList, courseList, markList):
 
 def add_class_to_student(studentList, courseList, markList):
     if studentList.check_empty():
-        input(
-            "No student found, please add one!\nEnter to continue."
-        )
+        input("No student found, please add one!\nEnter to continue.")
         return
     student, mark = "", ""
     while True:
-        studentInput = get_input_as_string(
-            "Enter student name or id: ").upper()
+        studentInput = get_input_as_string("Enter student name or id: ").upper()
         studentPosition = studentList.find_student(studentInput)
         if studentPosition == -1:
             print("Student not found, please try again!")
@@ -121,8 +116,7 @@ def add_class_to_student(studentList, courseList, markList):
     courseList.show_courses()
 
     while True:
-        courseInput = get_input_as_string(
-            "Enter course name or ID to add student: ")
+        courseInput = get_input_as_string("Enter course name or ID to add student: ")
         coursePosition = courseList.find_course(courseInput)
         if coursePosition == -1:
             choice = get_input_as_string(
@@ -138,8 +132,7 @@ def add_class_to_student(studentList, courseList, markList):
         course.add_student(student.get_id())
         break
 
-    newMark = StudentMark(student.get_name(),
-                          student.get_id(), student.get_dob())
+    newMark = StudentMark(student.get_name(), student.get_id(), student.get_dob())
     while True:
         # if newMark.set_mark(get_input_as_float("Enter mark: ")) != -1:
         if newMark.set_mark(get_input_as_float_floor("Enter mark: ")) != -1:
@@ -164,9 +157,7 @@ def add_mark_to_student(markList, courseList):
         return
     studentMark = mark.get_student(studentPosition)
     while True:
-        if studentMark.set_mark(
-            get_input_as_float_floor("Enter mark: ")
-        ) != -1:
+        if studentMark.set_mark(get_input_as_float_floor("Enter mark: ")) != -1:
             break
 
 

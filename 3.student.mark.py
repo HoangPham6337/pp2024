@@ -10,7 +10,8 @@ from datetime import datetime
 
 # Utility functions
 def clear_screen():
-    os.system("cls") if platform.uname().system == "Windows" else os.system("clear")
+    os.system("cls") if platform.uname(
+    ).system == "Windows" else os.system("clear")
 
 
 def get_input_as_string(prompt) -> str:
@@ -80,11 +81,12 @@ def find_in_list(itemToFind, listToSearch) -> int:
     return -1
 
 
-def get_input_as_date(prompt) -> datetime:
+def get_input_as_date(prompt) -> str:
     while True:
         date_str = get_input_as_string(prompt)
         try:
-            date = datetime.strptime(date_str, "%d-%m-%Y").date().strftime("%d-%m-%Y")
+            date = datetime.strptime(
+                date_str, "%d-%m-%Y").date().strftime("%d-%m-%Y")
             return date
         except ValueError:
             print("Invalid date input. Please use the format DD-MM-YYYY and try again!")
@@ -95,10 +97,12 @@ def get_input_as_int_curses(window, prompt, silent, limit):
         window.clear()
         window.addstr(prompt, curses.A_BOLD)
         window.refresh()
-        
+
     num_str = ""
     while True:
-        key = window.getch()  # Return the unicode, not the literal string representation of key
+        key = (
+            window.getch()
+        )  # Return the unicode, not the literal string representation of key
         if key >= ord("0") and key <= ord("9"):  # Ignore everything that not a number
             if len(num_str) >= limit:
                 continue
@@ -107,7 +111,8 @@ def get_input_as_int_curses(window, prompt, silent, limit):
         elif key == curses.KEY_BACKSPACE or key == 127:
             if len(num_str) > 0:
                 num_str = num_str[:-1]
-                window.addstr("\b \b")  # Delete the number replace by space then delete the space
+                # Delete the number replace by space then delete the space
+                window.addstr("\b \b")
         elif key in [10, "\n", "\r", curses.KEY_ENTER]:
             break
         window.refresh()
@@ -133,7 +138,9 @@ def choose_menu(choice):
             input("Press Enter to return.")
         case "5":
             clear_screen()
-            print(f"Maximum number of courses: {courses.get_total()}\nCurrent number of courses: {courses.get_current()}\n")
+            print(
+                f"Maximum number of courses: {courses.get_total()}\nCurrent number of courses: {courses.get_current()}\n"
+            )
             courses.show_courses()
             input("Press Enter to return.")
         case "6":
@@ -174,6 +181,7 @@ def exit_curses(stdscr):
 
 # Courses related class and functions
 class Courses:
+
     def __init__(self):
         self.__courses = []  # List of course object
         self.__number_of_course = 0
@@ -226,6 +234,7 @@ class Courses:
 
 
 class Course:
+
     def __init__(self, name, id, total):
         self.__name = name
         self.__id = id
@@ -305,6 +314,7 @@ class Course:
 
 
 class Students:
+
     def __init__(self):
         self.__students = []  # List of object student
 
@@ -343,6 +353,7 @@ class Students:
 
 
 class Student:
+
     def __init__(self, name, id, dob):
         self.__name = name
         self.__id = id
@@ -364,7 +375,7 @@ class Student:
         if not isinstance(otherStudent, Student):
             return NotImplemented
         else:
-            return self.__GPA < otherStudent.get_GPA()
+            return self.__GPA < int(otherStudent.get_GPA())
 
     def get_name(self) -> str:
         return self.__name
@@ -378,11 +389,12 @@ class Student:
     def set_GPA(self, GPA):
         self.__GPA = GPA
 
-    def get_GPA(self) -> str:
-        return self.__GPA
+    def get_GPA(self) -> float:
+        return float(self.__GPA)
 
 
 class Marks(Courses):
+
     def __init__(self):
         super().__init__()
 
@@ -438,6 +450,7 @@ class Marks(Courses):
 
 
 class Mark(Course):
+
     def __init__(self, name, id, ECTs):
         super().__init__(name, id, 0)
         self.__ECTs = ECTs
@@ -494,6 +507,7 @@ class Mark(Course):
 
 
 class StudentMark(Student):
+
     def __init__(self, name, id, dob):
         super().__init__(name, id, dob)
         self.__mark = 0
@@ -512,12 +526,19 @@ class StudentMark(Student):
 
 def add_course(courseList, markList):
     if courseList.is_full():
-        increase_courses = get_input_as_string("Course list is full, do you want to increase the number of courses? (Y/N) ").upper()
+        increase_courses = get_input_as_string(
+            "Course list is full, do you want to increase the number of courses? (Y/N) "
+        ).upper()
         if increase_courses == "N":
             return
         print(f"Current number of courses: {courseList.get_current()}")
         while True:
-            if (courseList.set_number_of_course(get_input_as_int("Enter new number of courses: "))== -1):
+            if (
+                courseList.set_number_of_course(
+                    get_input_as_int("Enter new number of courses: ")
+                )
+                == -1
+            ):
                 continue
             break
     name, id, total = "", "", 0
@@ -596,7 +617,8 @@ def add_class_to_student(studentList, courseList, markList):
         return
     student, mark = "", ""
     while True:
-        studentInput = get_input_as_string("Enter student name or id: ").upper()
+        studentInput = get_input_as_string(
+            "Enter student name or id: ").upper()
         studentPosition = studentList.find_student(studentInput)
         if studentPosition == -1:
             print("Student not found, please try again!")
@@ -609,7 +631,8 @@ def add_class_to_student(studentList, courseList, markList):
     courseList.show_courses()
 
     while True:
-        courseInput = get_input_as_string("Enter course name or ID to add student: ")
+        courseInput = get_input_as_string(
+            "Enter course name or ID to add student: ")
         coursePosition = courseList.find_course(courseInput)
         if coursePosition == -1:
             choice = get_input_as_string(
@@ -625,7 +648,8 @@ def add_class_to_student(studentList, courseList, markList):
         course.add_student(student.get_id())
         break
 
-    newMark = StudentMark(student.get_name(), student.get_id(), student.get_dob())
+    newMark = StudentMark(student.get_name(),
+                          student.get_id(), student.get_dob())
     while True:
         # if newMark.set_mark(get_input_as_float("Enter mark: ")) != -1:
         if newMark.set_mark(get_input_as_float_floor("Enter mark: ")) != -1:
@@ -655,7 +679,7 @@ def add_mark_to_student(markList, courseList):
             break
 
 
-def show_all_mark_course(markList, courseList) -> object:
+def show_all_mark_course(markList, courseList) -> Mark:
     courseInput = get_input_as_string("Enter Course name or ID: ")
     coursePosition = courseList.find_course(courseInput)
     if coursePosition == -1:
@@ -754,14 +778,19 @@ def welcome_screen(stdscr):
     max_y, max_x = stdscr.getmaxyx()
 
     if max_x < 120 or max_y < 33:
-        stdscr.addstr(f"Current size: {max_x} x {max_y}. Please use a terminal bigger than 120x32.",
-            curses.A_BOLD,)
+        stdscr.addstr(
+            f"Current size: {max_x} x {max_y}. Please use a terminal bigger than 120x32.",
+            curses.A_BOLD,
+        )
         stdscr.refresh()
         stdscr.nodelay(True)
         warningWindow = curses.newwin(max_y, max_x, 1, 0)
         for i in range(0, 4):
             warningWindow.addstr(
-                0, 0, "Terminal too small! Using compact UI...", WHITE_AND_RED | curses.A_BLINK
+                0,
+                0,
+                "Terminal too small! Using compact UI...",
+                WHITE_AND_RED | curses.A_BLINK,
             )
             warningWindow.refresh()
             time.sleep(1)
@@ -800,7 +829,10 @@ def welcome_screen(stdscr):
     choiceWindow = curses.newwin(2, 11, 21, (max_x - 58) // 2)
 
     curses.curs_set(True)
-    courses.set_number_of_course(get_input_as_int_curses(menuWindow, "Enter number of courses: ", False, 19))
+    courses.set_number_of_course(
+        get_input_as_int_curses(
+            menuWindow, "Enter number of courses: ", False, 19)
+    )
     curses.curs_set(False)
     startup_display = [
         "1. Enter student's information.",
@@ -822,7 +854,8 @@ def welcome_screen(stdscr):
         for i in range(0, len(startup_display)):
             if i == option - 1:
                 display = "=>" + startup_display[i]
-                menuWindow.addstr(i, 0, display, curses.A_BLINK | BLUE_AND_BLACK)
+                menuWindow.addstr(
+                    i, 0, display, curses.A_BLINK | BLUE_AND_BLACK)
             else:
                 menuWindow.addstr(i, 0, startup_display[i])
         menuWindow.refresh()
@@ -830,12 +863,15 @@ def welcome_screen(stdscr):
         key = stdscr.getkey()
         if key == "KEY_UP":
             option -= 1 if option >= 0 else 0
-            if option == 0: option = 11
+            if option == 0:
+                option = 11
         elif key == "KEY_DOWN":
             option += 1 if option < 12 else 0
-            if option == 12: option = 0
+            if option == 12:
+                option = 1
         elif key in [10, "\n", "\r", curses.KEY_ENTER]:
-            if option == 11: exit(1)
+            if option == 11:
+                exit(1)
             elif option in range(1, 11):
                 curses.endwin()
                 choose_menu(option)
@@ -843,7 +879,7 @@ def welcome_screen(stdscr):
             stdscr = curses.initscr()
             curses.cbreak()
             stdscr.keypad(True)
-        elif key in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']:
+        elif key in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]:
             choiceWindow.addstr("Choice: ")
             choice = get_input_as_int_curses(choiceWindow, "", True, 2)
             choiceWindow.clear()
@@ -852,5 +888,6 @@ def welcome_screen(stdscr):
             choose_menu(choice)
             curses.cbreak()
             stdscr.keypad(True)
+
 
 wrapper(welcome_screen)
