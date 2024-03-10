@@ -75,6 +75,9 @@ class Course:
             print("Duplicate student.")
             return -1
 
+    def add_student_from_file(self, newStudentID):
+        self.__studentsID.append(newStudentID)
+
     def check_duplicate_student(self, newStudentID):
         return find_in_list(newStudentID, self.__studentsID) != -1
 

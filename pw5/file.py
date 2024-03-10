@@ -59,7 +59,7 @@ def import_courses(courseList) -> int:
                 newCourse = Course(name=courseDict["name"], id=courseDict["id"], total=courseDict["total"])
                 newCourse.set_current(courseDict["current"])
                 for studentID in courseDict["studentsID"]:
-                    newCourse.add_student(studentID)
+                    newCourse.add_student_from_file(studentID)
                 courseList.add_course(newCourse)
         return 1
     return 0
