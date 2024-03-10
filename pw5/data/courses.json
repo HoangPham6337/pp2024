@@ -1,0 +1,1 @@
+[{"courseMax": 3}, [{"name": "Math", "id": "MAT101", "total": 10, "current": 8, "studentsID": ["22BI133175", "22BI13253"]}, {"name": "Physics", "id": "PHY101", "total": 20, "current": 4, "studentsID": ["22BI13253"]}, {"name": "Something", "id": "SOMETHING1", "total": 3, "current": 2, "studentsID": ["22BI133175"]}]]
