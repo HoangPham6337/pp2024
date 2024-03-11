@@ -25,7 +25,9 @@ from pickle_file import (
     pickle_marks,
     pickle_load_courses,
     pickle_load_students,
-    pickle_load_marks
+    pickle_load_marks,
+    compress_data,
+    extract_data
 )
 
 students = Students()
@@ -33,6 +35,7 @@ courses = Courses()
 marks = Marks()
 
 create_dir()
+extract_data()
 courses = pickle_load_courses(courses)
 students = pickle_load_students(students)
 marks = pickle_load_marks(marks)
@@ -204,3 +207,4 @@ if use_old_ui:
 pickle_courses(courses)
 pickle_students(students)
 pickle_marks(marks)
+compress_data()

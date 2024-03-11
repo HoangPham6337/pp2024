@@ -1,4 +1,5 @@
 import pickle, os
+import tarfile
 from domains import (
     Courses,
     Students,
@@ -21,6 +22,18 @@ def pickle_students(studentList):
 def pickle_marks(markList):
     with open("data_pickle/marks", "wb") as mark_file:
         pickle.dump(markList, mark_file)
+
+def compress_data():
+    with tarfile.open("data_pickle/students.dat", "w:gz") as f_out:
+        for file in ["data_pickle/courses", "data_pickle/students", "data_pickle/marks"]:
+            f_out.add(file, arcname=os.path.basename(file))
+    for file in ["data_pickle/courses", "data_pickle/students", "data_pickle/marks"]:
+        os.remove(file)
+
+def extract_data():
+    if os.path.isfile("data_pickle/students.dat"):
+        with tarfile.open("data_pickle/students.dat", "r:gz") as tar:
+            tar.extractall(path="data_pickle/")
 
 def pickle_load_courses(courses) -> Courses:
     if os.path.isfile("data_pickle/courses"):
