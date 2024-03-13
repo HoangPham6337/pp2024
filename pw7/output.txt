@@ -1,0 +1,13 @@
+total 39
+drwxrwxrwx 1 root root  4096 Mar 12 13:11 .
+drwxrwxrwx 1 root root  4096 Mar 11 22:46 ..
+-rwxrwxrwx 1 root root   451 Mar 12 10:34 7.shell.py
+-rwxrwxrwx 1 root root     0 Mar 12 12:06 input.txt
+-rwxrwxrwx 1 root root     0 Mar 12 13:11 output.txt
+-rwxrwxrwx 1 root root   514 Mar 12 11:01 out.txt
+drwxrwxrwx 1 root root  4096 Mar 12 13:10 __pycache__
+-rwxrwxrwx 1 root root  1550 Mar 12 13:08 run_commands.py
+-rwxrwxrwx 1 root root 15416 Mar 12 09:25 test
+-rwxrwxrwx 1 root root    78 Mar 12 09:24 test.c
+-rwxrwxrwx 1 root root    59 Mar 12 09:20 test.py
+-rwxrwxrwx 1 root root   931 Mar 12 11:58 utilities.py
