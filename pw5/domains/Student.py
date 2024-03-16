@@ -44,3 +44,4 @@ class Student:
 
     def get_GPA(self) -> str:
         return self.__GPA
+

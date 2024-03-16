@@ -8,7 +8,7 @@ class BackgroundPickleFile(threading.Thread):
         self.__marks = marks
     def run(self):
         pickle_file_wrapper(self.__courses, self.__students, self.__marks)
-        print("Finished exporting file")
+        # print("Finished exporting file")
 
 class BackgroundImportPickleFile(threading.Thread):
     def __init__(self, courses, students, marks):

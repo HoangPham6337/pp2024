@@ -34,7 +34,7 @@ def change_directory(commands):
         else:
             os.chdir(f"/home/{getpass.getuser()}")
     except FileNotFoundError as fnf:
-        print(f"Directory not found: {fnf.file}")
+        print(f"Directory not found: {fnf.filename}")
     except PermissionError as pe:
         print(f"Not sufficient permission: {pe.filename}")
     except NotADirectoryError as nae:
