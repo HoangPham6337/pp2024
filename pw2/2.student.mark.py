@@ -3,14 +3,21 @@ import platform
 from datetime import datetime
 
 # Utility functions
+
+
 def clear_screen():
-    os.system("cls") if platform.uname().system == "Windows" else os.system("clear")
+    os.system("cls") if platform.uname(
+    ).system == "Windows" else os.system("clear")
+
 
 def get_input_as_string(prompt) -> str:
     while True:
         data = input(prompt).strip()
-        if not data: print("Cannot leave input blank, please try again!")
-        else: return data
+        if not data:
+            print("Cannot leave input blank, please try again!")
+        else:
+            return data
+
 
 def get_input_as_int(prompt) -> int:
     while True:
@@ -20,6 +27,7 @@ def get_input_as_int(prompt) -> int:
         except ValueError:
             print("Invalid input, please try again!")
 
+
 def get_input_as_float(prompt) -> float:
     while True:
         data = input(prompt).strip()
@@ -28,9 +36,11 @@ def get_input_as_float(prompt) -> float:
         except ValueError:
             print("Invalid input, please try again!")
 
+
 def output_padding(item) -> str:
     tab_width = 20
     return " " * (tab_width - len(str(item)))
+
 
 def find_item_in_list(itemToFind, listToSearch, caseInsensitive) -> int:
     if caseInsensitive == 1:
@@ -44,17 +54,20 @@ def find_item_in_list(itemToFind, listToSearch, caseInsensitive) -> int:
                 return i
     return -1
 
+
 def find_in_list(itemToFind, listToSearch) -> int:
     for i in range(0, len(listToSearch)):
         if itemToFind == listToSearch[i]:
             return i
     return -1
 
+
 def get_input_as_date(prompt) -> datetime:
     while True:
         date_str = get_input_as_string(prompt)
         try:
-            date = datetime.strptime(date_str, "%d-%m-%Y").date().strftime("%d-%m-%Y")
+            date = datetime.strptime(
+                date_str, "%d-%m-%Y").date().strftime("%d-%m-%Y")
             return date
         except ValueError:
             print("Invalid date input. Please use the format DD-MM-YYYY and try again!")
@@ -112,6 +125,7 @@ class Courses:
                 f"{course.get_current()}"
             )
 
+
 class Course:
     def __init__(self, name, id, total):
         self.__name = name
@@ -147,7 +161,8 @@ class Course:
     def add_student(self, newStudentID) -> int:
         if self.is_full():
             if (get_input_as_string("The course is full. Do you want to add more student? (Y/N) ").upper() == "Y"):
-                self.set_total(get_input_as_int(f"Current maximum: {self.get_total()}. Enter the new value: "))
+                self.set_total(get_input_as_int(f"Current maximum: {
+                               self.get_total()}. Enter the new value: "))
             else:
                 input("Failed to add student to course, please try again!")
                 return -1
@@ -179,6 +194,7 @@ class Course:
                 f"{student.get_dob()}"
             )
 
+
 class Students:
     def __init__(self):
         self.__students = []  # List of object student
@@ -194,7 +210,7 @@ class Students:
 
     def get_student(self, studentPosition) -> object:
         return self.__students[studentPosition]
-    
+
     def check_empty(self) -> bool:
         return len(self.__students) == 0
 
@@ -213,6 +229,7 @@ class Students:
                 f"{student.get_dob()}"
             )
 
+
 class Student:
     def __init__(self, name, id, dob):
         self.__name = name
@@ -221,7 +238,8 @@ class Student:
 
     def __str__(self) -> str:
         return (
-            f"Student name: {self.__name}\nStudent ID: {self.__id}\nDOB: {self.__dob}"
+            f"Student name: {self.__name}\nStudent ID: {
+                self.__id}\nDOB: {self.__dob}"
         )
 
     def get_name(self) -> str:
@@ -232,6 +250,7 @@ class Student:
 
     def get_dob(self) -> str:
         return self.__dob
+
 
 class Marks(Courses):
     def __init__(self):
@@ -245,7 +264,7 @@ class Marks(Courses):
 
     def get_current(self):
         pass
-    
+
     def set_number_of_course(self, numberOfCourse):
         pass
 
@@ -258,14 +277,15 @@ class Marks(Courses):
     def show_courses(self):
         pass
 
+
 class Mark(Course):
     def __init__(self, name, id):
         super().__init__(name, id, 0)
         self.__students = []  # Student mark object
-    
+
     def __str__(self) -> str:
         return f"Course name: {self._Course__name}\nCourse ID: {self._Course__id}"
-    
+
     def get_total(self):
         pass
 
@@ -274,21 +294,22 @@ class Mark(Course):
 
     def get_current(self):
         pass
-    
+
     def is_full(self):
         pass
-    
+
     def add_student(self, newStudent):
         self.__students.append(newStudent)
-    
+
     def find_student(self, student) -> int:
         position = find_item_in_list(student, self.__students, 1)
-        position = position if position != -1 else find_item_in_list(student.get_id(), self.__students, 1)
+        position = position if position != - \
+            1 else find_item_in_list(student.get_id(), self.__students, 1)
         return position
 
     def get_student(self, studentPosition) -> object:
         return self.__students[studentPosition]
-    
+
     def show_all_student(self):
         headers = ["Student name", "Student ID", "Mark"]
         widths = [8, 10, 16]
@@ -303,14 +324,15 @@ class Mark(Course):
                 f"{student.get_mark()}{output_padding(student.get_mark())}"
             )
 
+
 class StudentMark(Student):
     def __init__(self, name, id, dob):
         super().__init__(name, id, dob)
         self.__mark = 0
-    
+
     def get_mark(self) -> float:
         return self.__mark
-    
+
     def set_mark(self, mark) -> int:
         if mark < 0:
             print("Invalid input, please try again!")
@@ -319,14 +341,16 @@ class StudentMark(Student):
             self.__mark = mark
             return 0
 
+
 def add_course(courseList, markList):
     if courseList.is_full():
-        increase_courses = get_input_as_string("Course list is full, do you want to increase the number of courses? (Y/N) ").upper() 
+        increase_courses = get_input_as_string(
+            "Course list is full, do you want to increase the number of courses? (Y/N) ").upper()
         if increase_courses == 'N':
             return
         print(f"Current number of courses: {courseList.get_current()}")
         while True:
-            if (courseList.set_number_of_course(get_input_as_int("Enter new number of courses: "))== -1):
+            if (courseList.set_number_of_course(get_input_as_int("Enter new number of courses: ")) == -1):
                 continue
             break
     name, id, total = "", "", 0
@@ -338,6 +362,7 @@ def add_course(courseList, markList):
     courseList.add_course(newCourse)
     markList.add_course(newMark)
 
+
 def show_all_student_course(studentList, courseList):
     courseInput = get_input_as_string("Enter Course name or ID: ")
     coursePosition = courseList.find_course(courseInput)
@@ -347,6 +372,7 @@ def show_all_student_course(studentList, courseList):
     course = courseList.get_course(coursePosition)
     print(course)
     course.show_all_student(studentList)
+
 
 def add_student(studentList, courseList, markList):
     if courseList.check_empty():
@@ -367,7 +393,8 @@ def add_student(studentList, courseList, markList):
 
     courseList.show_courses()
     while True:
-        courseChoice = get_input_as_string('Enter the Course ID to add student or "empty" to skip: ').upper()
+        courseChoice = get_input_as_string(
+            'Enter the Course ID to add student or "empty" to skip: ').upper()
         if courseChoice == "EMPTY":
             break
         coursePosition = courseList.find_course(courseChoice)
@@ -380,7 +407,8 @@ def add_student(studentList, courseList, markList):
         if course.add_student(newStudent.get_id()) == -1:
             continue
 
-        markChoice = get_input_as_string("Do you want to add mark to student? (Y/N): ").upper()
+        markChoice = get_input_as_string(
+            "Do you want to add mark to student? (Y/N): ").upper()
         if markChoice == 'Y':
             while True:
                 if newMark.set_mark(get_input_as_float("Enter mark: ")) != -1:
@@ -388,13 +416,15 @@ def add_student(studentList, courseList, markList):
         mark.add_student(newMark)
         break
 
+
 def add_class_to_student(studentList, courseList, markList):
     if studentList.check_empty:
         input("No student found in the system, please add one!\nPress Enter to continue.")
         return
     student, mark = "", ""
     while True:
-        studentInput = get_input_as_string("Enter student name or id: ").upper()
+        studentInput = get_input_as_string(
+            "Enter student name or id: ").upper()
         studentPosition = studentList.find_student(studentInput)
         if studentPosition == -1:
             print("Student not found, please try again!")
@@ -407,10 +437,12 @@ def add_class_to_student(studentList, courseList, markList):
     courseList.show_courses()
 
     while True:
-        courseInput = get_input_as_string("Enter course name or ID to add student: ")
+        courseInput = get_input_as_string(
+            "Enter course name or ID to add student: ")
         coursePosition = courseList.find_course(courseInput)
         if coursePosition == -1:
-            choice = get_input_as_string("Course not found, do you want to try again? (Y/N) ").upper()
+            choice = get_input_as_string(
+                "Course not found, do you want to try again? (Y/N) ").upper()
             if choice == "N":
                 return
         mark = markList.get_course(coursePosition)
@@ -421,11 +453,13 @@ def add_class_to_student(studentList, courseList, markList):
         course.add_student(student.get_id())
         break
 
-    newMark = StudentMark(student.get_name(), student.get_id(), student.get_dob())
+    newMark = StudentMark(student.get_name(),
+                          student.get_id(), student.get_dob())
     while True:
         if newMark.set_mark(get_input_as_float("Enter mark: ")) != -1:
             break
     mark.add_student(newMark)
+
 
 def add_mark_to_student(markList, courseList):
     mark = show_all_mark_course(markList, courseList)
@@ -436,6 +470,7 @@ def add_mark_to_student(markList, courseList):
     while True:
         if studentMark.set_mark(get_input_as_float("Enter mark: ")) != -1:
             break
+
 
 def show_all_mark_course(markList, courseList) -> object:
     courseInput = get_input_as_string("Enter Course name or ID: ")
@@ -449,6 +484,7 @@ def show_all_mark_course(markList, courseList) -> object:
     print()
     mark.show_all_student()
     return mark
+
 
 students = Students()
 courses = Courses()
@@ -487,7 +523,8 @@ while True:
             input()
         case "5":
             clear_screen()
-            print(f"Maximum number of courses: {courses.get_total()}\nCurrent number of courses: {courses.get_current()}\n")
+            print(f"Maximum number of courses: {courses.get_total(
+            )}\nCurrent number of courses: {courses.get_current()}\n")
             courses.show_courses()
             input()
         case "6":

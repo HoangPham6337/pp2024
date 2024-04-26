@@ -3,3 +3,4 @@ vir_env_python_linux/
 vir_env_python_windows/
 .idea/
 .vscode/
+**/__pycache__/
